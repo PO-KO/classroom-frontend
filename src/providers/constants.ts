@@ -1,10 +1,15 @@
 import { GraduationCap, School } from "lucide-react";
 
+export const CLASS_STATUS = {
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+} as const;
+
 export const USER_ROLES = {
   STUDENT: "student",
   TEACHER: "teacher",
   ADMIN: "admin",
-};
+} as const;
 
 export const ROLE_OPTIONS = [
   {
@@ -48,7 +53,7 @@ export const DEPARTMENT_OPTIONS = DEPARTMENTS.map((dept) => ({
   label: dept,
 }));
 
-export const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB in bytes
+export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 export const ALLOWED_TYPES = [
   "image/png",
   "image/jpeg",
@@ -64,8 +69,8 @@ const getEnvVar = (key: string): string => {
   return value;
 };
 
-// export const CLOUDINARY_UPLOAD_URL = getEnvVar("VITE_CLOUDINARY_UPLOAD_URL");
-// export const CLOUDINARY_CLOUD_NAME = getEnvVar("VITE_CLOUDINARY_CLOUD_NAME");
+export const CLOUDINARY_UPLOAD_URL = getEnvVar("VITE_CLOUDINARY_UPLOAD_URL");
+export const CLOUDINARY_CLOUD_NAME = getEnvVar("VITE_CLOUDINARY_CLOUD_NAME");
 export const API_BASE_URL = getEnvVar("VITE_API_BASE_URL");
 
 // export const BASE_URL = getEnvVar("VITE_API_URL");
@@ -74,9 +79,9 @@ export const API_BASE_URL = getEnvVar("VITE_API_BASE_URL");
 
 // export const REFRESH_TOKEN_URL = `${BASE_URL}/refresh-token`;
 
-// export const CLOUDINARY_UPLOAD_PRESET = getEnvVar(
-//   "VITE_CLOUDINARY_UPLOAD_PRESET",
-// );
+export const CLOUDINARY_UPLOAD_PRESET = getEnvVar(
+  "VITE_CLOUDINARY_UPLOAD_PRESET",
+);
 
 export const teachers = [
   {
@@ -90,28 +95,5 @@ export const teachers = [
   {
     id: "3",
     name: "Dr. Alan Turing",
-  },
-];
-
-export const subjects = [
-  {
-    id: 1,
-    name: "Mathematics",
-    code: "MATH",
-  },
-  {
-    id: 2,
-    name: "Computer Science",
-    code: "CS",
-  },
-  {
-    id: 3,
-    name: "Physics",
-    code: "PHY",
-  },
-  {
-    id: 4,
-    name: "Chemistry",
-    code: "CHEM",
   },
 ];
