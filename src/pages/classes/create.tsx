@@ -39,9 +39,7 @@ import {
 } from "@/components/ui/select";
 import { CLASS_STATUS } from "@/providers/constants";
 import { Loader2 } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import UploadWidget from "@/components/uploadWidget";
-import { FormControl } from "@/components/ui/form";
+import UploadWidget from "@/components/UploadWidget";
 
 const teachers = [
   { id: "teacher-1", name: "Dr. Sarah Connor" },
@@ -99,7 +97,8 @@ const ClassesCreate = () => {
     formState: { isSubmitting, errors },
   } = form;
 
-  const onSubmit = (data: z.infer<typeof classSchema>) => {
+  const onSubmit = async (data: z.infer<typeof classSchema>) => {
+    const result = await form.refineCore.onFinish(data);
     console.log(data);
     toast("You submitted the following values:", {
       description: (
@@ -164,50 +163,13 @@ const ClassesCreate = () => {
                                 }
                               : null
                           }
-                          onChange={(file: any, field: any) =>
-                            setBannerImage(file, field)
-                          }
+                          onChange={(file) => setBannerImage(file, field)}
                         />
 
                         {errors.bannerCldPubId && !errors.bannerUrl && (
                           <FieldError errors={[errors.bannerCldPubId]} />
                         )}
                       </FieldContent>
-                      <Controller
-                        name="teacherId"
-                        control={control}
-                        render={({ field, fieldState }) => (
-                          <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor={field.name}>
-                              Teacher
-                              <span className="text-orange-600">*</span>
-                            </FieldLabel>
-                            <Select
-                              name={field.name}
-                              value={field.value?.toString()}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger
-                                id="form-rhf-select"
-                                aria-invalid={fieldState.invalid}
-                                className="min-w-[120px]"
-                              >
-                                <SelectValue placeholder="Select a Teacher" />
-                              </SelectTrigger>
-                              <SelectContent position="item-aligned">
-                                {teachers.map(({ id, name }) => (
-                                  <SelectItem key={id} value={id.toString()}>
-                                    {name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </Field>
-                        )}
-                      />
                     </Field>
                   )}
                 />
