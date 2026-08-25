@@ -101,12 +101,13 @@ const ClassesCreate = () => {
     try {
       await form.refineCore.onFinish(data);
       toast.success("Class created successfully!");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Submission failed:", error);
 
       toast.error("Failed to create class", {
         description:
-          error?.message || "An unexpected error occurred. Please try again.",
+          (error as Error | HttpError)?.message ||
+          "An unexpected error occurred. Please try again.",
       });
     }
   };
@@ -160,7 +161,9 @@ const ClassesCreate = () => {
                           }
                           onChange={(file) => setBannerImage(file, field)}
                         />
-
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                         {errors.bannerCldPubId && !errors.bannerUrl && (
                           <FieldError errors={[errors.bannerCldPubId]} />
                         )}
@@ -205,7 +208,7 @@ const ClassesCreate = () => {
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger
-                            id="form-rhf-select"
+                            id={field.name}
                             aria-invalid={fieldState.invalid}
                             className="min-w-[120px]"
                           >
@@ -240,7 +243,7 @@ const ClassesCreate = () => {
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger
-                            id="form-rhf-select-language"
+                            id={field.name}
                             aria-invalid={fieldState.invalid}
                             className="min-w-[120px]"
                           >
@@ -301,6 +304,7 @@ const ClassesCreate = () => {
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger
+                            id={field.name}
                             aria-invalid={fieldState.invalid}
                             className="min-w-[120px]"
                           >
@@ -338,7 +342,7 @@ const ClassesCreate = () => {
                                 : e.target.value.slice(0, MAX_DESC_LENGTH);
                             field.onChange(value);
                           }}
-                          id="form-rhf-demo-description"
+                          id={field.name}
                           placeholder="Brief description about the class."
                           rows={6}
                           className="min-h-24 resize-none"
@@ -369,7 +373,7 @@ const ClassesCreate = () => {
               >
                 Reset
               </Button>
-              <Button type="submit" form="class-form">
+              <Button type="submit" form="class-form" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <div className="flex gap-1">
                     <span>Creating Class...</span>

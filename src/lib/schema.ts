@@ -49,7 +49,6 @@ export const classSchema = z.object({
       required_error: "Capacity is required",
       invalid_type_error: "Capacity is required",
     })
-    .positive()
     .min(1, "Capacity must be at least 1"),
   status: z.enum([CLASS_STATUS.ACTIVE, CLASS_STATUS.INACTIVE]),
   bannerUrl: z
