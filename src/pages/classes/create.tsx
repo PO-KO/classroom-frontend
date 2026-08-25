@@ -98,22 +98,17 @@ const ClassesCreate = () => {
   } = form;
 
   const onSubmit = async (data: z.infer<typeof classSchema>) => {
-    const result = await form.refineCore.onFinish(data);
-    console.log(data);
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+    try {
+      await form.refineCore.onFinish(data);
+      toast.success("Class created successfully!");
+    } catch (error: any) {
+      console.error("Submission failed:", error);
+
+      toast.error("Failed to create class", {
+        description:
+          error?.message || "An unexpected error occurred. Please try again.",
+      });
+    }
   };
 
   return (
