@@ -57,6 +57,19 @@ const options: CreateDataProviderOptions = {
       return payload.pagination?.total ?? payload.data?.length ?? 0;
     },
   },
+
+  create: {
+    getEndpoint: ({ resource }) => resource,
+
+    buildBodyParams: async ({ variables }) => variables,
+
+    mapResponse: async (response) => {
+      if (!response.ok) throw await buildHttpError(response);
+      const payload: ListResponse = await response.clone().json();
+
+      return payload.data ?? [];
+    },
+  },
 };
 
 export const { dataProvider } = createDataProvider(API_BASE_URL, options);

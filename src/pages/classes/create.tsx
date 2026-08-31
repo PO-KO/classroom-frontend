@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { BaseRecord, HttpError, useBack } from "@refinedev/core";
+import { BaseRecord, HttpError, useBack, useList } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { Controller } from "react-hook-form";
 import {
@@ -37,23 +37,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CLASS_STATUS } from "@/providers/constants";
+import { CLASS_STATUS, USER_ROLES } from "@/providers/constants";
 import { Loader2 } from "lucide-react";
 import UploadWidget from "@/components/UploadWidget";
-
-const teachers = [
-  { id: "teacher-1", name: "Dr. Sarah Connor" },
-  { id: "teacher-2", name: "Prof. Alan Turing" },
-  { id: "teacher-3", name: "Dr. Ada Lovelace" },
-  { id: "teacher-4", name: "Prof. Richard Feynman" },
-];
-const subjects = [
-  { id: 1, name: "Mathematics", code: "MATH" },
-  { id: 2, name: "Computer Science", code: "CS" },
-  { id: 3, name: "Physics", code: "PHYS" },
-  { id: 4, name: "Artificial Intelligence", code: "AI" },
-  { id: 5, name: "Database Systems", code: "DBS" },
-];
+import { Subject, User } from "@/types";
 
 const ClassesCreate = () => {
   const back = useBack();
@@ -72,6 +59,24 @@ const ClassesCreate = () => {
       capacity: 30,
     },
   });
+
+  const { query: subjectsQry } = useList<Subject>({
+    resource: "subjects",
+    pagination: {
+      pageSize: 100,
+    },
+  });
+
+  const { query: teachersQry } = useList<User>({
+    resource: "users",
+    filters: [{ field: "role", operator: "eq", value: USER_ROLES.TEACHER }],
+    pagination: {
+      pageSize: 100,
+    },
+  });
+
+  const subjects = subjectsQry?.data?.data || [];
+  const teachers = teachersQry?.data?.data || [];
 
   const setBannerImage = (file: any, field: any) => {
     if (file) {
@@ -92,6 +97,7 @@ const ClassesCreate = () => {
   const MAX_DESC_LENGTH = 200;
   const bannerPublicId = form.watch("bannerCldPubId");
   const {
+    refineCore: { onFinish },
     handleSubmit,
     control,
     formState: { isSubmitting, errors },
@@ -99,7 +105,7 @@ const ClassesCreate = () => {
 
   const onSubmit = async (data: z.infer<typeof classSchema>) => {
     try {
-      await form.refineCore.onFinish(data);
+      await onFinish(data);
       toast.success("Class created successfully!");
     } catch (error: unknown) {
       console.error("Submission failed:", error);
@@ -206,11 +212,12 @@ const ClassesCreate = () => {
                           name={field.name}
                           value={field.value?.toString()}
                           onValueChange={field.onChange}
+                          disabled={teachersQry.isLoading}
                         >
                           <SelectTrigger
                             id={field.name}
                             aria-invalid={fieldState.invalid}
-                            className="min-w-[120px]"
+                            className="min-w-30"
                           >
                             <SelectValue placeholder="Select a Teacher" />
                           </SelectTrigger>
@@ -241,11 +248,12 @@ const ClassesCreate = () => {
                           name={field.name}
                           value={field.value?.toString() ?? ""}
                           onValueChange={field.onChange}
+                          disabled={subjectsQry.isLoading}
                         >
                           <SelectTrigger
                             id={field.name}
                             aria-invalid={fieldState.invalid}
-                            className="min-w-[120px]"
+                            className="min-w-30"
                           >
                             <SelectValue placeholder="Select a Subject" />
                           </SelectTrigger>
@@ -306,7 +314,7 @@ const ClassesCreate = () => {
                           <SelectTrigger
                             id={field.name}
                             aria-invalid={fieldState.invalid}
-                            className="min-w-[120px]"
+                            className="min-w-30"
                           >
                             <SelectValue />
                           </SelectTrigger>
