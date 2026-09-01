@@ -209,7 +209,6 @@ const ClassesCreate = () => {
                           <span className="text-orange-600">*</span>
                         </FieldLabel>
                         <Select
-                          name={field.name}
                           value={field.value?.toString()}
                           onValueChange={field.onChange}
                           disabled={teachersQry.isLoading}
@@ -245,7 +244,6 @@ const ClassesCreate = () => {
                           <span className="text-orange-600">*</span>
                         </FieldLabel>
                         <Select
-                          name={field.name}
                           value={field.value?.toString() ?? ""}
                           onValueChange={field.onChange}
                           disabled={subjectsQry.isLoading}
@@ -307,7 +305,6 @@ const ClassesCreate = () => {
                           Status<span className="text-orange-600">*</span>
                         </FieldLabel>
                         <Select
-                          name={field.name}
                           value={field.value}
                           onValueChange={field.onChange}
                         >
